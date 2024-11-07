@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-#config nginx
-
-
-#!/usr/bin/env bash
 # Configure a new Ubuntu machine to match task requirements for Nginx
 
 # Update and install Nginx
