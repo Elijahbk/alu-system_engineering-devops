@@ -1,15 +1,32 @@
 #!/usr/bin/env bash
-# Configuring  Nginx server so that /redirect_me is redirecting to another page.
+# Creating a server with a redirect
 
-sudo apt-get -y update
-sudo apt-get -y install nginx
+# Updating all packages
+sudo apt-get update -y && sudo apt-get upgrade -y
 
+# Install Nginx
+sudo apt-get install nginx -y
+
+# Creating an index page
 echo "Holberton School" | sudo tee /var/www/html/index.html
 
-# redirection config
-replacement="server_name _;\\
-    rewrite ^/redirect_me https://github.com/Skomaiya/ permanent;"
-sudo sed -i "s|server_name _;|$replacement|" /etc/nginx/sites-available/default
+# Write data to nginx.conf
+echo "
+events {
 
-sudo nginx -t
-sudo service nginx start
+}
+
+http {
+	server {
+		listen 80;
+
+		root /var/www/html;
+
+		location /redirect_me {
+			return 301 https://google.com;
+		}
+	}
+}" | sudo tee /etc/nginx/nginx.conf
+
+# Reload nginx
+sudo service nginx restart
