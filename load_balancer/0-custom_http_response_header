@@ -2,7 +2,7 @@
 #config nginx
 
 
-ssh -i ~/.ssh/server2 ubuntu@54.173.64.0 <<'EOSSH'
+ssh -i ~/.ssh/server2 ubuntu@23.20.201.144 <<'EOSSH'
 apt remove --purge nginx nginx-full nginx-common -y
 sudo apt update
 sudo apt install nginx -y
