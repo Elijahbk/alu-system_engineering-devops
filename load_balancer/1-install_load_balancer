@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Install the load balancer
+ssh -i ~/.ssh/server3 ubuntu@23.22.130.97 
+# Update software packages
+sudo apt-get -y update && sudo apt-get -y upgrade
+
+# Install haproxy
+sudo apt-get -y install haproxy
+
+# Setup a proxy
+sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
+sudo sed -i "$ a\listen 5891-lb-01\n\tbind *:80\n\tmode http\n\tbalance roundrobin\n\toption httpclose\n\toption forwardfor\n\tserver 5891-web-02 23.20.201.144 check\n\tserver 5891-web-01 54.173.64.0 check" /etc/haproxy/haproxy.cfg
+
+# Start the proxy
+sudo service haproxy start
