@@ -1,36 +1,35 @@
 #!/usr/bin/env bash
-# Configure a new Ubuntu machine to match task requirements for Nginx
+#config nginx
 
-# Update and install Nginx
-sudo apt update -y
+
+ssh -i ~/.ssh/server2 ubuntu@54.91.1.41 <<'EOSSH'
+apt remove --purge nginx nginx-full nginx-common -y
+sudo apt update
 sudo apt install nginx -y
+sudo touch /var/www/html/index.html
 
-# Set hostname (replace 'web-01' or 'web-02' with appropriate hostname)
-sudo hostnamectl set-hostname web-01  # or web-02 for the second server
-
-# Create the required HTML files
 echo "Holberton School" | sudo tee /var/www/html/index.html
+sudo touch /var/www/html/error404.html
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/error404.html
 
-# Configure Nginx to add the custom X-Served-By header
-sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+printf %s 'server {
+        listen 80 default_server;
+	        listen [::]:80 default_server;
 
-    root /var/www/html;
-    index index.html;
-    error_page 404 /error404.html;
+        root /var/www/html;
 
-    server_name _;
+        index index.html;
+	        error_page 404 /error404.html;
 
-    add_header X-Served-By \$hostname;
+        server_name _;
 
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-}
-EOF'
+        add_header X-Served-By $hostname;
 
-# Restart Nginx to apply the new configuration
-sudo systemctl restart nginx
+        location /redirect_me {
+	           return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4/;
+		           }
+			   }
+			   ' | sudo tee /etc/nginx/sites-available/default
+
+sudo service nginx restart
+EOSSH
