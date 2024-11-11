@@ -3,8 +3,8 @@
 # Install ufw
 sudo apt-get install -y ufw
 
-# Set default policies
-sudo ufw default deny incoming
+# Set default policies to deny all incoming traffic (as "filtered") and allow all outgoing traffic
+sudo ufw default reject incoming
 sudo ufw default allow outgoing
 
 # Allow specific ports
